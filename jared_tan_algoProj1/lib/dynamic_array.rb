@@ -69,6 +69,15 @@ class DynamicArray
 
   # O(n): has to copy over all the elements to the new store.
   def resize!
-    @capacity *= 2
+    new_capacity = @capacity * 2
+    new_store = StaticArray.new(new_capacity)
+
+    @length.times do |i|
+      new_store[i] = @store[i]
+    end
+
+    @store = new_store
+    @capacity = new_capacity
+    @start_idx = 0
   end
 end

@@ -12,20 +12,14 @@ class RingBuffer
 
   # O(1)
   def [](index)
-    unless (index >= 0) && (index < length)
-      raise "index out of bounds"
-    else
-      return @store[(index + start_idx) % capacity]
-    end
+    raise 'index out of bounds' if index >= @length
+    @store[(@start_idx + index) % @capacity]
   end
 
   # O(1)
   def []=(index, val)
-    unless (index >= 0) && (index < length)
-      raise "index out of bounds"
-    else
-      @store[(index + start_idx) % capacity] = val
-    end
+    raise 'index out of bounds' if index >= @length || index < 0
+    @store[(@start_idx + index) % @capacity] = val
   end
 
   # O(1)
