@@ -28,7 +28,7 @@ class BinaryMinHeap
 
   def push(val)
     @store << val
-    self.class.heapify_up(@store, count - 1, &prc)
+    self.class.heapify_up(@store, count - 1, @prc)
   end
 
   public
@@ -78,7 +78,6 @@ class BinaryMinHeap
 
     parent_idx = parent_index(child_idx)
     child_val, parent_val = array[child_idx], array[parent_idx]
-    p array
     if prc.call(child_val, parent_val) >= 0
       return array
     else
