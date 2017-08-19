@@ -133,8 +133,14 @@ class BinarySearchTree
     arr
   end
 
+  def self.size(tree_node = @root)
+    return 0 if tree_node.nil?
+    1 + size(tree_node.left) + size(tree_node.right)
+  end
 
   private
-  # optional helper methods go here:
+
+
+
 
 end
