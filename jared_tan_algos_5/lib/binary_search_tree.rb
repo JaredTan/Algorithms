@@ -10,18 +10,18 @@ class BinarySearchTree
   end
 
   def insert(value)
-    return @root = BSTNode.new(value, nil, 0) if !@root
+    return @root = BSTNode.new(value, nil) if !@root
     current_node = @root
     while true
       if value <= current_node.value
         if !current_node.left
-          return current_node.left = BSTNode.new(value, current_node, current_node.depth + 1)
+          return current_node.left = BSTNode.new(value, current_node)
         else
           current_node = current_node.left
         end
       else
         if !current_node.right
-          return current_node.right = BSTNode.new(value, current_node, current_node.depth + 1)
+          return current_node.right = BSTNode.new(value, current_node)
         else
           current_node = current_node.right
         end
@@ -121,6 +121,10 @@ class BinarySearchTree
   end
 
   def is_balanced?(tree_node = @root)
+    return true if !tree_node
+    return true if tree_node.left.nil? && tree_node.right.nil?
+    return false if (depth(tree_node.left) - depth(tree_node.right)).abs > 1
+    [is_balanced?(tree_node.left), is_balanced?(tree_node.right)].all?
   end
 
   def in_order_traversal(tree_node = @root, arr = [])
