@@ -112,15 +112,15 @@ class DynamicProgramming
   def knapsack_table(weights, values, capacity)
     num_items = weights.length
     weight_val_hash = {}
-    (0..num_items - 1).each do |i|
-      weight_val_hash[i] = [weights[i], values[i]]
+    (1..num_items).each do |i|
+      weight_val_hash[i] = [weights[i - 1], values[i - 1]]
     end
     table = Array.new(num_items + 1) { Array.new(capacity + 1)}
-    table[0].each_with_index do |val, weight|
-      table[0][weight] = 0
+    table[0].each_index do |idx|
+      table[0][idx] = 0
     end
     (1..num_items).each do |i|
-      weight, value = weight_val_hash[i - 1]
+      weight, value = weight_val_hash[i]
       (0..capacity).each do |j|
         if weight > j
           table[i][j] = table[i-1][j]
