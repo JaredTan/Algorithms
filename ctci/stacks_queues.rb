@@ -163,4 +163,99 @@ def queue_via_stacks
 
   end
 
+
+  def soft_stack
+
+    class SoftStack
+
+      def initialize
+        @stack = []
+      end
+
+
+      def push(val)
+        @stack.unshift(val)
+        if !is_empty?
+          current_idx = 0
+          until current_idx >= @stack.length - 1 || @stack[current_idx] <= @stack[current_idx + 1]
+            temp = @stack[current_idx + 1]
+            @stack[current_idx + 1] = val
+            @stack[current_idx] = temp
+            current_idx += 1
+          end
+        end
+        @stack
+      end
+
+      def pop
+        @stack.shift
+      end
+
+      def peek
+        @stack[0]
+      end
+
+      def is_empty?
+        @stack.empty?
+      end
+
+    end
+
+  end
+
+  def animal_shelter
+    class Dog
+      attr_reader :name, :arrival
+      def initialize(name, arrival)
+        @name = name
+        @arrival = arrival
+      end
+    end
+
+    class Cat
+      attr_reader :name, :arrival
+      def initialize(name, arrival)
+        @name = name
+        @arrival = arrival
+      end
+    end
+
+    class AnimalShelter
+     def initialize
+       @cats = LinkedList.new
+       @dogs = LinkedList.new
+     end
+
+     def enqueue(animal)
+       if animal.class == Dog
+         @dogs.append(animal)
+       else
+         @cats.append(animal)
+       end
+     end
+
+     def dequeueAny
+       if @dogs.first.arrival < @cats.first.arrival
+         return @dogs.shift
+       else
+         return @cats.shift
+       end
+     end
+
+     def dequeueCat
+       @cats.shift
+     end
+
+     def dequeueDog
+       @dogs.shift
+     end
+
+   end
+
+  end
+
+
+
+
+
 end
