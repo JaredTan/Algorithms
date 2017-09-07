@@ -99,3 +99,29 @@ def left_most_node(node)
   end
   return node
 end
+
+def build_order(projects)
+  return 'no projects' if projects.empty?
+  edge_hash = {}
+  queue = []
+  result = []
+  projects.each do |project|
+    edge_hash[project] = project.in_edges.count
+    queue << project if project.in_edges.empty?
+  end
+  raise 'no starting project' if queue.empty?
+  while queue.length > 0
+    current = queue.shift
+    current.out_edges.each do |edge|
+      new_project = edge.to_project
+      queue << new_project
+      edge_hash[new_project] -= 1
+      raise 'loop' if edge_hash[new_project] < 0
+    end
+    result << current
+  end
+  return result
+end
+
+
+end
