@@ -114,14 +114,42 @@ def build_order(projects)
     current = queue.shift
     current.out_edges.each do |edge|
       new_project = edge.to_project
-      queue << new_project
+      queue << new_project if edge_hash[new_project] == 0
       edge_hash[new_project] -= 1
       raise 'loop' if edge_hash[new_project] < 0
     end
-    result << current
+    result << current unless result.include?(current)
+  end
+  edge_hash.keys.each do |project|
+    puts "#{project} is not included in the build order" if edge_hash[project] != 0
   end
   return result
 end
 
+def first_common_ancestor(node1, node2)
+  return node1.parent if is_descendant_of(node1.parent, node2)
+  return 'no common ancestor' if !node1.parent || !node2
+  first_common_ancestor(node1.parent, node2)
+end
 
+def is_descendant_of(tree_node, node)
+  return false if !tree_node || !node
+  return true if tree_node.left == node || tree_node.right == node
+  [is_descendant_of(tree_node.left, node), is_descendant_of(tree_node.right, node)].any?
+end
+
+def BSTSequences(tree_node)
+
+  return [] if !tree_node
+  return [tree_node] if !tree_node.left && !tree_node.right
+  left_side = BSTSequences(tree_node.left)
+  right_side = BSTSequences(tree_node.right)
+  res = []
+  left_side.each do |left_seq|
+    right_side.each do |right_seq|
+      res << tree_node.val.concat(left_seq).concat(right_seq)
+      res << tree_node.val.concat(right_seq).concat(right_seq)
+    end
+  end
+  res
 end
