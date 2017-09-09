@@ -139,17 +139,50 @@ def is_descendant_of(tree_node, node)
 end
 
 def BSTSequences(tree_node)
-
   return [] if !tree_node
-  return [tree_node] if !tree_node.left && !tree_node.right
+  return [tree_node.val] if !tree_node.left && !tree_node.right
   left_side = BSTSequences(tree_node.left)
   right_side = BSTSequences(tree_node.right)
   res = []
-  left_side.each do |left_seq|
+  if left_side.empty?
     right_side.each do |right_seq|
-      res << tree_node.val.concat(left_seq).concat(right_seq)
-      res << tree_node.val.concat(right_seq).concat(right_seq)
+      res << tree_node.val.concat(right_seq)
+    end
+  elsif right_side.empty?
+    left_side.each do |left_seq|
+      res << tree_node.val.concat(left_seq)
+    end
+  else
+    left_side.each do |left_seq|
+      right_side.each do |right_seq|
+        res << tree_node.val.concat(left_seq).concat(right_seq)
+        res << tree_node.val.concat(right_seq).concat(left_seq)
+      end
     end
   end
   res
+end
+
+def check_subtree(tree_node1, tree_node2)
+  big_node = bfs(tree_node1, tree_node2)
+  return false if !big_node
+  recurse_subtrees?(big_node, tree_node2)
+end
+
+def bfs(tree_node1, tree_node2)
+  queue = [tree_node1]
+  while queue.length > 0
+    current_node = queue.shift
+    break if current_node == tree_node2
+    queue << current_node.left if current_node.left
+    queue << current_node.right if current_node.right
+  end
+  return nil if current_node != tree_node2
+  return current_node
+end
+
+def recurse_subtrees?(tree_node1, tree_node2)
+  return true if tree_node1.left.nil? && tree_node2.left.nil? && tree_node1.right.nil? && tree_node.left.nil?
+  return false if tree_node1.left != tree_node2.left || tree_node1.right != tree_node2.right
+  [recurse_subtrees(tree_node1.left, tree_node2.left), recurse_subtrees(tree_node1.right, tree_node2.right)].all?
 end
