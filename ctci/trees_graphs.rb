@@ -186,3 +186,35 @@ def recurse_subtrees?(tree_node1, tree_node2)
   return false if tree_node1.left != tree_node2.left || tree_node1.right != tree_node2.right
   [recurse_subtrees(tree_node1.left, tree_node2.left), recurse_subtrees(tree_node1.right, tree_node2.right)].all?
 end
+
+###
+
+def pairs_with_sum_breadth_traversal(tree_node)
+  queue = []
+  queue = [tree_node] if tree_node
+  count = 0
+  while queue.length > 0
+    current = queue.shift
+    count += pairs_with_sum(current)
+    queue << current.left if current.left && (current.left.left || current.left.right)
+    queue << current.right if current.right && (current.right.left || current.right.right)
+  end
+  count
+end
+
+def pairs_with_sum_in_order_traversal(tree_node, count = 0)
+  pairs_with_sum_in_order_traversal(tree_node.left, count) if tree_node.left && (tree_node.left.left || tree_node.left.right)
+  count += pairs_with_sum(tree_node)
+  pairs_with_sum_in_order_traversal(tree_node.right, count) if tree_node.right && (tree_node.right.left || tree_node.right.right)
+  count
+end
+
+
+def pairs_with_sum(tree_node, prev_val = 0)
+  return 0 if !tree_node.left || !tree_node.right
+  sum = prev_val + tree_node.val
+  count = 0
+  count += 1 if sum == tree_node.left.val
+  count += 1 if sum == tree_node.right.val
+  count + pairs_with_sum(tree_node.left, sum) + pairs_with_sum(tree_node.right, sum)
+end
