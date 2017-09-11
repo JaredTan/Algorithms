@@ -227,7 +227,3 @@ def draw_line(arr, w, x1, x2, y)
   end
   arr
 end
-
-
-
-end
