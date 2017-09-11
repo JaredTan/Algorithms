@@ -196,3 +196,38 @@ def conversion(a, b)
   count
   # runs in O(b) + O(b)/2 = O(b) - slightly faster because you dont need to check all the least significant bits.
 end
+
+
+def pairwise_swap(int)
+  ((int & 0xAAAAAAA) >>> 1) | ((int & 0x5555555) << 1)
+end
+
+
+def draw_line(arr, w, x1, x2, y)
+  h = arr.length * 8 / w
+  y_start = (h - y) * (w / 8)
+  start_offset = x1 % 8
+  start = y_start + (x1 / 8)
+  finish_offset = x2 % 8
+  finish = y_start + (x2 / 8)
+  if start == finish
+    mask = (1 << (8 - start_offset + 1) - 1) & (0xFF << (8 - finish_off))
+    arr[start] |= mask
+  else
+    changed_start = start_offset == 0 ? start + 1 : start
+    changed_finish = finish_offset == 7 ? finish - 1 : finish
+    arr[changed_start..changed_finish].each do |bit|
+      bit |= 0xFF
+    end
+    #saves time by simply ORing full bits! ^
+    start_mask = (1 << (8 - start_offset + 1) - 1)
+    finish_mask = (0xFF << (8 - finish_offset))
+    arr[changed_start] |= start_mask if start_offset != 0
+    arr[changed_finish] |= finish_mask if finish_offset != 7
+  end
+  arr
+end
+
+
+
+end
