@@ -106,3 +106,93 @@ def convert_to_bit(num)
   end
   bit_arr
 end
+
+def find_next(num)
+  # obtain j and c
+
+  bit_arr = [0] + convert_to_bit(num)
+  c = 0
+  bit_arr.reverse.each_with_index do |bit, idx|
+    if bit == 0
+      if bit_arr[idx - 1] && bit_arr[idx - 1] == 1
+        j = idx
+        break
+      end
+    else
+      c += 1
+    end
+  end
+
+  #turn j into 1
+
+  num |= (1 << j)
+
+  # turn everything to the right of j into 0
+
+  mask = ~((1 << j) - 1)
+  num &= mask
+
+  #replace c - 1 zeros to ones, starting from the start
+
+  mask = (1 << c - 1) - 1
+  num |= mask
+
+  num
+end
+
+def find_prev(num)
+  # obtain j and c
+
+  bit_arr = convert_to_bit(num)
+  c = 0
+  bit_arr.reverse.each_with_index do |bit, idx|
+    if bit == 0
+      if bit[idx + 1] && bit[idx + 1] == 1
+        j = idx
+        break
+      end
+    else
+      c += 1
+    end
+  end
+
+  #turn j + 1 into a 0
+
+  mask = ~(( 1 << j + 1))
+  nun &= mask
+
+  #turn everything to the right of j into 0
+
+  mask = ~((1 << j + 1) - 1)
+  num &= mask
+
+  # make the first c bits 1
+
+  mask = (1 << c) - 1
+  num |= mask
+
+  num
+end
+
+def conversion(a, b)
+  c = a ^ b
+  count = 0
+  while c != 0
+    count += 1 if c & 1
+    c >>>= 1
+    #logical shifts dont work in ruby :(
+  end
+  count
+  # 2O(b) = O(b) time where b = num of bits
+end
+
+def conversion(a, b)
+  c = a ^ b
+  count = 0
+  while c != 0
+    c = c & (c - 1)
+    count += 1
+  end
+  count
+  # runs in O(b) + O(b)/2 = O(b) - slightly faster because you dont need to check all the least significant bits.
+end
