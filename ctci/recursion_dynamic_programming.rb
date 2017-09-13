@@ -116,35 +116,106 @@ class TowersOfHanoi
       rec_towers_of_hanoi(n - 1, s1, s2, s3)
     end
   end
+end
 
-  def perm_without_dups(str)
-    return [str] if str.length <= 1
-    old_perms = perm_without_dups(str[0...-1])
-    new_perms = []
-    old_perms.each do |perm|
-      (0..perm.length).each do |idx|
-        new_perms << perm[0...idx] + str[-1] + perm[idx..-1]
-      end
+def perm_without_dups(str)
+  return [str] if str.length <= 1
+  old_perms = perm_without_dups(str[0...-1])
+  new_perms = []
+  old_perms.each do |perm|
+    (0..perm.length).each do |idx|
+      new_perms << perm[0...idx] + str[-1] + perm[idx..-1]
     end
-    new_perms
   end
+  new_perms
+end
 
-  def perms_with_dups(str, hash_map = nil)
-    return [str] if str.length <= 1
-    if !hash_map
-      hash_map = Hash.new(0)
-      str.each_char do |char|
-        hash_map[char] += 1
-      end
+def perms_with_dups(str, hash_map = nil)
+  return [str] if str.length <= 1
+  if !hash_map
+    hash_map = Hash.new(0)
+    str.each_char do |char|
+      hash_map[char] += 1
     end
-    return [] if hash_map.values.all? {|val| v == 0 }
-    new_perms = []
-    hash_map.keys.each do |prefix|
-      if hash_map[key] > 0
-        hash_map[key] -= 1
-        new_perms << prefix + perms_with_dups(str, hash_map)
-        hash_map[key] += 1
-      end
-    end
-    new_perms
   end
+  return [] if hash_map.values.all? {|val| v == 0 }
+  new_perms = []
+  hash_map.keys.each do |prefix|
+    if hash_map[key] > 0
+      hash_map[key] -= 1
+      new_perms << prefix + perms_with_dups(str, hash_map)
+      hash_map[key] += 1
+    end
+  end
+  new_perms
+end
+
+def parens(n)
+  return [] if n == 0
+  return ['()'] if n == 1
+  hash_map = {}
+  new_parens = []
+  old_parens = parens(n - 1)
+  old_parens.each do |old_paren|
+    front = '()' + old_paren
+    if !hash_map[front]
+      new_parens << front
+      hash_map[front] = true
+    end
+    cover = '(' + old_paren + ')'
+    if !hash_map[cover]
+      new_parens << cover
+      hash_map[cover] = true
+    end
+    back = old_paren + '()'
+    if !hash_map[back]
+      new_parens << back
+      hash_map[back] = true
+    end
+  end
+  new_parens
+end
+
+def paint_fill_bfs(screen, start, color)
+  hash_map = {}
+  queue = [start]
+  while queue.length > 0
+    current = queue.shift
+    adjacent_coords(screen, current, color).each do |coord|
+      row, col = coord
+      if !hash[coord]
+        screen[row][col] = color
+        hash[coord] = true
+        queue << coord
+      end
+    end
+  end
+  screen
+end
+
+def adjacent_coords(screen, coord, color)
+  res = []
+  row = coord[0] - 1
+  while row < coord[0] + 1
+    col = coord[1] - 1
+    while col < coord[1] + 1
+      res << [row, col] if screen[row][col] && screen[row][col] != color
+      col += 1
+    end
+    row += 1
+  end
+  res
+end
+
+def paint_fill_dfs(screen, coord, color)
+  row, col = coord
+  return if !screen[row][col] || screen[row][col] == color
+  # return if row < 0 || row >= screen.length
+  # return if col < 0 || col >= screen[0].length
+  screen[row][col] = color
+  paint_fill_dfs(screen, [row - 1, col], color)
+  paint_fill_dfs(screen, [row + 1, col], color)
+  paint_fill_dfs(screen, [row, col - 1], color)
+  paint_fill_dfs(screen, [row, col + 1], color)
+  return scren
+end
