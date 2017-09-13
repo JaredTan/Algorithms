@@ -16,6 +16,7 @@ def queen(families)
 end
 
 def poison
+  #setup run 1
   bottles = Array.new(1000, false)
   bottles[rand(1000)] = true
   num_unknown_bottles = 1000
@@ -27,6 +28,7 @@ def poison
   #run 1
   new_start, new_finish, key = run_strips(strip_bottle_hash, bottles)
 
+  #setup run 2
   num_unknown_bottles = new_finish - new_start + 1
   bottle_offset = new_start
 
@@ -42,6 +44,7 @@ def poison
   #run 2
   new_start, new_finish = run_strips(strip_bottle_hash, bottles)
 
+  #setup run 3
   num_unknown_bottles = new_finish - new_start + 1
   bottle_offset += new_start
 
