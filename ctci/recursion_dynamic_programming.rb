@@ -219,3 +219,136 @@ def paint_fill_dfs(screen, coord, color)
   paint_fill_dfs(screen, [row, col + 1], color)
   return scren
 end
+
+def coins(n)
+  cache = {1 => ['p']}
+  return cache[n] if cache[n]
+  (2..n).each do |sum|
+    temp_coins = []
+    (1...sum).each do |a|
+      if sum == 5
+        temp_coins << 'n'
+      elsif sum == 10
+        temp_coins << 'd'
+      elsif sum == 25
+        temp_coins << 'q'
+      end
+      cache[a].each do |a_coins|
+        cache[sum - a].each do |b_coins|
+          temp_coins << a_coins + b_coins
+        end
+      end
+    end
+    cache[sum] = temp_coins
+  end
+  cache[n]
+end
+
+def eight_queens
+  cache = create_cache
+  (2..8).each do |num_queens|
+    next_queens = []
+    cache[num_queens - 1].each do |coord|
+      spots = available_spots(cache_num_queens[num_queens - 1])
+      spots.each do |spot|
+        next_queens << spot + coords
+      end
+    end
+    cache[num_queens] = next_queens
+  end
+  cache[8]
+end
+
+def create_cache
+  cache = {}
+  arr = []
+  (0..7).each do |i|
+    (0..7).each do |j|
+      arr << [i, j]
+    end
+  end
+  cache[1] = arr
+  cache
+end
+
+def available_spots(coords)
+  spots = create_cache[1]
+  coords.each do |coord|
+    spots.delete(horizontals(coord))
+    spots.delete(verticals(coord))
+    spots.delete(diagonals(coord))
+  end
+  spots
+end
+
+def stack_of_boxes(boxes, current_box = nil)
+  ok_boxes = boxes_fit?(boxes, current_box)
+  return current_box.height if current_box && ok_boxes.length == 0
+  heights = []
+
+  ok_boxes.each do |box|
+    heights << current_box.height + stack_of_boxes(ok_boxes, box)
+  end
+  heights.max
+end
+
+def boxes_fit?(boxes, current_box)
+  return boxes if !current_box
+  boxes.each do |box|
+    next if box == current_box
+    if box.height < current_box.height && box.width < current_box.width && box.depth < current_box.depth
+      ok_boxes << box
+    end
+  end
+  return ok_boxes
+end
+
+class BooleanEval
+  def initialize
+    @cache = {}
+  end
+
+  def boolean_eval(str, boolean)
+    #basecase
+    return 0 if str.length == 0
+    if str.length == 1
+      return 1 if str[0] == 0 && !boolean
+      return 1 if str[0] == 1 && boolean
+      return 0 if str[0] == 0 && boolean
+      return 0 if str[0] == 1 && !boolean
+    end
+
+    count = 0
+    i = 0
+    while i < str.length - 1
+      left = str[0..i]
+      right = str[i+2..-1]
+      if boolean
+        if str[i+1] == '|'
+          count += boolean_eval(left, true) * boolean_eval(right, true)
+          count += boolean_eval(left, true) * boolean_eval(right, false)
+          count += boolean_eval(left, false) * boolean_eval(right, true)
+        elsif str[i+1] == '&'
+          count += boolean_eval(left, true) * boolean_eval(right, true)
+        else
+          count += boolean_eval(left, true) * boolean_eval(right, false)
+          count += boolean_eval(left, false) * boolean_eval(left, true)
+        end
+      else
+        if str[i+1] == '|'
+          count += boolean_eval(left, false) * boolean_eval(right, false)
+        elsif str[i+1] == '&'
+          count += boolean_eval(left, true) * boolean_eval(right, false)
+          count += boolean_eval(left, false) * boolean_eval(right, false)
+          count += boolean_eval(left, false) * boolean_eval(right, true)
+        else
+          count += boolean_eval(left, true) * boolean_eval(right, true)
+          count += boolean_eval(left, false) * boolean_eval(left, false)
+        end
+      end
+      i += 2
+    end
+    count
+  end
+
+end
