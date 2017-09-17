@@ -54,19 +54,17 @@
 # end
 
 def min_patches(nums, n)
-  miss = 1
-  added = 0
   i = 0
-  while miss <= n
-    if i < nums.length && nums[i] <= miss
-      i += 1
-      miss += nums[i]
+  range_after = 1
+  count = 0
+  while range_after <= n
+    if i >= nums.length || nums[i] > range_after
+      count += 1
+      range_after += range_after
     else
-      miss += miss
-      added += 1
+      range_after += nums[i]
+      i += 1
     end
   end
-
-  added
-
+  count
 end
