@@ -8,14 +8,12 @@ def check_valid_string(string)
     elsif char == ')'
       return false if stack.empty?
       new_stack = remove_last_left(stack)
-      return false if new_stack.nil?
       stack = new_stack
     elsif char == '*'
       stack.push('*')
       stars += 1
     end
   end
-
   length = 0
   stack.each do |char|
     if char == '('
@@ -35,6 +33,5 @@ def remove_last_left(stack)
   while i > 0 && stack[i] != '('
     i -= 1
   end
-  return nil if i < 0
   return stack[0...i] + stack[i+1..-1]
 end
