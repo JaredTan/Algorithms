@@ -5,8 +5,9 @@ def two_sum(nums, target)
   end
   (0..(nums.length - 1)).each do |idx|
     complement = target - nums[idx]
-    return [idx, hash_table[complement]] if hash_table[complement] && hash_table[complement] != idx
+    return [idx + 1, hash_table[complement] + 1] if hash_table[complement] && hash_table[complement] != idx
   end
+  return nil
 end
 #
 # def three_sum(nums)

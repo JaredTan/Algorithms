@@ -64,7 +64,7 @@ class SocialNetwork
     visited_nodes1 = []
     visited_nodes2 = []
     collided = false
-    while (queue1.length > 0 && queue.length2 > 0) || collided
+    while (queue1.length > 0 && queue.length2 > 0) || !collided
       current1 = queue1.shift
       current1.friends.each do |friend|
         queue1 << friend
@@ -105,5 +105,5 @@ class SocialNetwork
     end
     path
   end
-  
+
 end
