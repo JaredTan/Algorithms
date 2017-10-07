@@ -2,7 +2,7 @@ def is_match(text, pattern)
   i = 0
   j = 0
   while i < text.length
-    return false if !text[i] || !pattern[j]
+    return false if !pattern[j]
     if text[i] == pattern[j] || pattern[j] == '.'
       i += 1
       j += 1
@@ -27,13 +27,10 @@ def is_match(text, pattern)
       j += 2
     end
   end
-  if j == pattern.length || (j == pattern.length - 2 && pattern[j + 1] == '*')
-    return true
-  else
-   return false
+  return true if j == pattern.length
+  while j < pattern.length
+    return false if !pattern[j + 1] || pattern[j + 1] != '*'
+    j += 2
   end
+  return true
 end
-
-
-p is_match('abbdbb', 'ab*d')
-is_match('abaa', 'a.*a*')
