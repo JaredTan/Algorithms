@@ -35,9 +35,7 @@ class Edge
     @p2 = p2
   end
 
-
 end
-
 
 class SocialNetwork
 
