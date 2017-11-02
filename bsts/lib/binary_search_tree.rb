@@ -10,18 +10,18 @@ class BinarySearchTree
   end
 
   def insert(value)
-    return @root = BSTNode.new(value, nil) if !@root
+    return @root = BSTNode.new(value) if !@root
     current_node = @root
     while true
       if value <= current_node.value
         if !current_node.left
-          return current_node.left = BSTNode.new(value, current_node)
+          return current_node.left = BSTNode.new(value)
         else
           current_node = current_node.left
         end
       else
         if !current_node.right
-          return current_node.right = BSTNode.new(value, current_node)
+          return current_node.right = BSTNode.new(value)
         else
           current_node = current_node.right
         end
@@ -30,100 +30,104 @@ class BinarySearchTree
   end
 
   def find(value, tree_node = @root)
-    return nil if !tree_node
-    current_node = tree_node
-    while current_node
-      if value == current_node.value
-        return current_node
-      elsif value < current_node.value
-        current_node = current_node.left
+    current = @root
+    while current
+      return current if current.value == value
+      if value > current.value
+        current = current.right
       else
-        current_node = current_node.right
+        current = current.left
       end
     end
     return nil
   end
 
-  def delete(value)
-    node = find(value)
-    if !node
-      return nil
+  def find_parent(value)
+    current = @root
+    return nil if current.value == value
+    while current
+      return nil if !current.right && !current.left
+      return current if current.left.value == value || current.right.value == value
+      if current.value > value
+        current = current.left
+      else
+        current = current.right
+      end
     end
+  end
 
-    if !node.left && !node.right
-      if node.value == @root.value
-        return @root = nil
-      end
-      if node.value > node.parent.value
-        node.parent.right = nil
-        node = nil
-      else
-        node.parent.left = nil
-        node = nil
-      end
-    elsif !node.left && node.right
-      if node.value > node.parent.value
-        node.parent.right = node.right
-      else
-        node.parent.left = node.right
-      end
-    elsif !node.right && node.left
-      if node.value > node.parent.value
-        node.parent.right = node.left
-      else
-        node.parent.left = node.left
-      end
-    elsif node.left && node.right
-      replacement_node = maximum(node.left)
-      old_left_node = node.left
-      old_right_node = node.right
-      if node.value == @root.value
-        @root = replacement_node
-        if !replacement_node.left
-          replacement_node.parent.right = nil
+
+  def delete(value)
+    delete_node = find(value)
+    return if !delete_node
+    delete_left = delete_node.left
+    delete_right = delete_node.right
+    delete_parent = find_parent(value)
+    if !delete_left && !delete_right
+      if delete_parent
+        if delete_parent.value > value
+          delete_parent.left = nil
         else
-          replacement_node.parent.right = replacement_node.left
+          delete_parent.right = nil
         end
-        @root.parent = nil
-        @root.left = old_left_node
-        @root.right = old_right_node
-        old_left_node.parent = @root
-        old_right_node.parent = @root
       else
-        if node.value > node.parent.value
-          node.parent.right = replacement_node
-        else
-          node.parent.left = replacement_node
-        end
-        replacement_node.left ? replacement_node.parent.right = replacement_node.left : replacement_node.parent.right = nil
-        replacement_node.parent = node.parent
-        replacement_node.value == old_left_node.value ? replacement_node.left = nil : replacement_node.left = old_left_node
-        replacement_node.value == old_right_node.value ? replacement_node.right = nil : replacement_node.right = old_right_node
+        @root = nil
       end
-      node = nil
+    elsif (delete_right && !delete_left) || (delete_left && !delete_right)
+      if delete_parent
+        if delete_left
+          delete_parent.left = delete_left
+        else
+          delete_parent.right = delete_right
+        end
+      else
+        if delete_left
+          @root = delete_left
+        else
+          @root = delete_right
+        end
+      end
+    else
+      max_node = maximum(delete_node.left)
+      max_node_left = max_node.left
+      max_node_parent = find_parent(max_node.value)
+      if delete_parent
+        if delete_parent.value > max_node.value
+          delete_parent.left = max_node
+        else
+          delete_parent.right = max_node
+        end
+      else
+        @root = max_node
+      end
+      max_node_parent.right = max_node_left
+      max_node.left = delete_left
+      max_node.right = delete_right
     end
 
   end
 
   # helper method for #delete:
   def maximum(tree_node = @root)
-    current_node = tree_node
-    while current_node
-      return current_node if !current_node.right
-      current_node = current_node.right
+    current = tree_node
+    return nil if !current
+    while current.right
+      current = current.right
     end
-    return nil
+    current
   end
 
+
+
   def depth(tree_node = @root)
-    return 0 if tree_node.nil? || (tree_node.left.nil? && tree_node.right.nil?)
+    return 0 if !tree_node || (!tree_node.left && !tree_node.right)
     1 + [depth(tree_node.left), depth(tree_node.right)].max
   end
 
   def is_balanced?(tree_node = @root)
-    return true if !tree_node
+    return true if !tree_node || (!tree_node.left && !tree_node.right)
     return false if (depth(tree_node.left) - depth(tree_node.right)).abs > 1
-    [is_balanced?(tree_node.left), is_balanced?(tree_node.right)].all?
+    [is_balanced?(tree_node.right), is_balanced?(tree_node.left)].all?
   end
 
   def in_order_traversal(tree_node = @root, arr = [])
@@ -134,10 +138,8 @@ class BinarySearchTree
   end
 
   def self.size(tree_node = @root)
-    return 0 if tree_node.nil?
+    return 0 if !tree_node
     1 + size(tree_node.left) + size(tree_node.right)
   end
-
-
 
 end

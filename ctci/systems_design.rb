@@ -36,7 +36,7 @@ class Edge
   end
 
 end
-
+;l
 class SocialNetwork
 
   attr_accessor :nodes, :edges

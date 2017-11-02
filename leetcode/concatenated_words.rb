@@ -48,3 +48,17 @@ def create_permutations(arr, cache = {})
   cache[arr.length] = final_perms
   final_perms
 end
+
+# return [] if arr.length == 0
+# return [arr[0]] if arr.length == 1
+# cache = {1 => arr[0]}
+# (2..arr.length).each do |length|
+#   prev_perms = cache[length - 1]
+#   new_perms = []
+#   prev_perms.each do |prev_perm|
+#     (0..prev_perm.length).each do |i|
+#       new_perms << [0...i] + [arr[length - 1]] + [i..-1]
+#     end
+#   end
+#
+# end

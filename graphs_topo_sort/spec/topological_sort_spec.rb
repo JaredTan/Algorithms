@@ -10,6 +10,7 @@ describe 'TopologicalSort' do
   let(:v6) { Vertex.new("Walk Markov") }
   let(:v7) { Vertex.new("Teach Markov") }
   let(:v8) { Vertex.new("Worship Markov") }
+  let(:tarjans) { TarjansTopoSort.new }
   let(:vertices) { [] }
 
   before(:each) do
@@ -34,7 +35,7 @@ describe 'TopologicalSort' do
       Edge.new(v5, v6)
       Edge.new(v6, v7)
       Edge.new(v7, v8)
-      expect(solutions).to include(topological_sort(vertices.shuffle).map{ |vert| vert.value})
+      expect(solutions).to include(tarjans.topo_sort(vertices.shuffle).map{ |vert| vert.value})
     end
   end
 
@@ -51,7 +52,7 @@ describe 'TopologicalSort' do
       Edge.new(v6, v7)
       Edge.new(v7, v8)
       Edge.new(v8, v2)
-      expect(topological_sort(vertices.shuffle).map{ |el| el.value }).to eq([])
+      expect(tarjans.topo_sort(vertices.shuffle).map{ |el| el.value }).to eq([])
     end
   end
 end

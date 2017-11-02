@@ -249,13 +249,6 @@ def queue_via_stacks
      def dequeueDog
        @dogs.shift
      end
-
    end
-
   end
-
-
-
-
-
 end

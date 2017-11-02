@@ -6,46 +6,86 @@
 # Use your RingBuffer to achieve optimal shifts! Write any additional
 # methods you need.
 
+# require_relative 'ring_buffer'
+#
+# class QueueWithMax
+#   attr_accessor :store
+#   attr_reader :max
+#
+#   def initialize
+#     @store = RingBuffer.new
+#     @store2 = RingBuffer.new
+#   end
+#
+#   def enqueue(val)
+#     if length == 0
+#       @store.push(val)
+#       @store2.push(val)
+#     else
+#       @store.push(val)
+#       p  @store2[@store2.length - 1]
+#       until @store2.length == 0 || val <= @store2[@store2.length - 1]
+#         @store2.pop
+#       end
+#       @store2.push(val)
+#     end
+#   end
+#
+#   def dequeue
+#     if @store[0] == @store2[0]
+#       @store.shift
+#       @store2.shift
+#     else
+#       @store.shift
+#     end
+#   end
+#
+#   def max
+#     @store2[0]
+#   end
+#
+#   def length
+#     @store.length
+#   end
+#
+# end
+
+
 require_relative 'ring_buffer'
 
 class QueueWithMax
   attr_accessor :store
-  attr_reader :max
 
   def initialize
-    @store = RingBuffer.new
-    @store2 = RingBuffer.new
+    @queue = RingBuffer.new
+    @max_queue = RingBuffer.new
   end
 
   def enqueue(val)
-    if length == 0
-      @store.push(val)
-      @store2.push(val)
-    else
-      @store.push(val)
-      p  @store2[@store2.length - 1]
-      until @store2.length == 0 || val <= @store2[@store2.length - 1]
-        @store2.pop
+    @queue.push(val)
+    @max_queue.push(val)
+    if length != 0
+      while @max_queue[0] < val
+        @max_queue.shift
       end
-      @store2.push(val)
     end
   end
 
   def dequeue
-    if @store[0] == @store2[0]
-      @store.shift
-      @store2.shift
+    if @queue[0] == @max_queue[0]
+      @queue.shift
+      @max_queue.shift
     else
-      @store.shift
+      @queue.shift
     end
   end
 
   def max
-    @store2[0]
+    @max_queue[0]
   end
 
   def length
-    @store.length
+    @queue.length
   end
 
 end
